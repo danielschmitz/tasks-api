@@ -1,28 +1,21 @@
-const express = require('express')
-const router = express.Router()
-require('dotenv').config()
+const express = require("express");
+const router = express.Router();
+require("dotenv").config();
 
-const Joi = require('joi')
-const bcrypt = require('bcrypt')
-const jsonwebtoken = require('jsonwebtoken')
-const db = require("../db")
-const utils = require('../utils')
+const Joi = require("joi");
+const bcrypt = require("bcrypt");
+const jsonwebtoken = require("jsonwebtoken");
+const db = require("../db");
+const utils = require("../utils");
 
 const userSchema = Joi.object({
-    name: Joi.string()
-        .min(3)
-        .max(50),
-    password: Joi.string()
-        .min(3)
-        .max(30)
-        .required(),
-    email: Joi.string()
-        .required()
-        .email()
-})
+  name: Joi.string().min(3).max(50),
+  password: Joi.string().min(3).max(30).required(),
+  email: Joi.string().required().email(),
+});
 
-router.post('/auth/login', async (req, res) => {
-    /* 
+router.post("/auth/login", async (req, res) => {
+  /* 
     #swagger.tags = ['Auth']
     #swagger.summary = 'Try to login. If user.name is provided, it will be created'
     #swagger.parameters['user'] = {
@@ -40,69 +33,67 @@ router.post('/auth/login', async (req, res) => {
     #swagger.responses[200] = { description: "Token" }
     */
 
-    const { email, password, name } = req.body
+  const { email, password, name } = req.body;
 
-    const validateData = userSchema.validate({ email, password, name })
-    if (validateData.error) {
-        return res.status(403).json({
-            message: validateData.error.message
-        })
+  const validateData = userSchema.validate({ email, password, name });
+  if (validateData.error) {
+    return res.status(403).json({
+      message: validateData.error.message,
+    });
+  }
+
+  const user = await db("users").where({ email }).first();
+  if (!user) {
+    if (name) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = {
+        name,
+        email,
+        password: hashedPassword,
+      };
+      const newUser = await db("users").insert(user).returning(['id','name','email']);
+      const token = getToken(newUser[0]);
+      return res.status(200).json({ token });
+    } else {
+      return res.status(500).json({ message: "No user found with that email" });
     }
+  }
 
-    const user = await db("users").where({ email }).first()
-    if (!user) {
-        if (name) {
-            const hashedPassword = await bcrypt.hash(password, 10)
-            const user = {
-                name,
-                email,
-                password: hashedPassword
-            }
-            const newUser = await db("users").insert(user)
-            const token = getToken(newUser)
-                return res.status(200).json({token})
+  const validatePassword = await bcrypt.compare(password, user.password);
+  if (!validatePassword) {
+    return res.status(401).json({ message: "Incorrect password" });
+  }
 
-            } else {
-            return res.status(500).json({ message: "No user found with that email" })
-        }
-    }
+  const token = getToken(user);
 
-    const validatePassword = await bcrypt.compare(password, user.password)
-    if (!validatePassword) {
-        return res.status(401).json({ message: "Incorrect password" })
-    }
+  res.status(200).json({ token });
+});
 
-    const token = getToken(user)
-
-    res.status(200).json({token})
-})
-
-
-router.get('/checkLogin', utils.checkLogin, async (req, res) => {
-    /* 
+router.get("/checkLogin", utils.checkLogin, async (req, res) => {
+  /* 
     #swagger.tags = ['Auth']
     #swagger.summary = '🔒️ Check login and return token info'
     #swagger.responses[401] = { description: 'Unauthorized' }
     #swagger.responses[500] = { description: 'Authorization header is required' }
     #swagger.responses[200] = { description: "Token" }
     */
-    return res.status(200).json({
-        token: req.auth
-    })
-})
+  return res.status(200).json({
+    token: req.auth,
+  });
+});
 
-
-module.exports = router
+module.exports = router;
 
 function getToken(newUser) {
-    return jsonwebtoken.sign(
-        {
-            id: newUser.id,
-            email: newUser.email,
-            name: newUser.name
-        },
-        process.env.JWT_SECRET,
-        {
-            expiresIn: '1y'
-        })
+  return jsonwebtoken.sign(
+    {
+      id: newUser.id,
+      email: newUser.email,
+      name: newUser.name,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1y",
+    }
+  );
 }
