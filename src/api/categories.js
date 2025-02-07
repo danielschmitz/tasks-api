@@ -40,7 +40,7 @@ router.get(
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
-    return res.json(category);
+    return res.json(category[0]);
   },
 );
 
