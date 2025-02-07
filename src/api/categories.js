@@ -93,6 +93,7 @@ router.put(
     #swagger.summary = '🔒️ Update a category by logged user'
     #swagger.responses[401] = { description: 'Unauthorized' }
     #swagger.responses[404] = { description: 'Category not found' }
+    #swagger.responses[409] = { description: 'Category already exists' }
     #swagger.responses[500] = { description: 'Authorization header is required' }
     #swagger.responses[200] = { description: "Category updated" }
     #swagger.parameters['category'] = {
@@ -111,6 +112,11 @@ router.put(
     const validateSchema = categorySchema.validate({ name });
     if (validateSchema.error) {
       return res.status(403).json({ message: validateSchema.error.message });
+    }
+
+    const name_exists = await db("categories").where({ name, user_id }).whereNot({ id });
+    if (name_exists) {
+      return res.status(409).json({ message: "Category already exists" });
     }
 
     const category_exists = await db("categories").where({ id, user_id });
