@@ -51,7 +51,9 @@ router.post("/auth/login", async (req, res) => {
         email,
         password: hashedPassword,
       };
-      const newUser = await db("users").insert(user).returning(['id','name','email']);
+      const newUser = await db("users")
+        .insert(user)
+        .returning(["id", "name", "email"]);
       const token = getToken(newUser[0]);
       return res.status(200).json({ token });
     } else {
@@ -94,6 +96,6 @@ function getToken(newUser) {
     process.env.JWT_SECRET,
     {
       expiresIn: "1y",
-    }
+    },
   );
 }

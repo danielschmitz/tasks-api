@@ -1,3 +1,1 @@
-module.exports = [
-    'hello-world', 'auth', 'categories', 'tasks'
-]
+module.exports = ["hello-world", "auth", "categories", "tasks"];

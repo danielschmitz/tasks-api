@@ -11,10 +11,7 @@
     }
   },
   "basePath": "/api",
-  "schemes": [
-    "http",
-    "https"
-  ],
+  "schemes": ["http", "https"],
   "securityDefinitions": {
     "bearerAuth": {
       "type": "apiKey",
@@ -26,9 +23,7 @@
   "paths": {
     "/hello-world": {
       "get": {
-        "tags": [
-          "Hello World"
-        ],
+        "tags": ["Hello World"],
         "summary": "A simple Hello World message",
         "description": "",
         "parameters": [],
@@ -41,9 +36,7 @@
     },
     "/hello-world-with-error": {
       "get": {
-        "tags": [
-          "Hello World"
-        ],
+        "tags": ["Hello World"],
         "summary": "A simple Hello World message",
         "description": "",
         "parameters": [],
@@ -56,9 +49,7 @@
     },
     "/hello-world-test-joi": {
       "post": {
-        "tags": [
-          "Hello World"
-        ],
+        "tags": ["Hello World"],
         "summary": "Test joi validaton object",
         "description": "",
         "parameters": [
@@ -90,9 +81,7 @@
     },
     "/hello-world-json": {
       "get": {
-        "tags": [
-          "Hello World"
-        ],
+        "tags": ["Hello World"],
         "summary": "hello world returning a json object",
         "description": "",
         "parameters": [],
@@ -105,9 +94,7 @@
     },
     "/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Try to login",
         "description": "",
         "parameters": [
@@ -149,9 +136,7 @@
     },
     "/checkLogin": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "🔒️ Check login and return token info",
         "description": "",
         "parameters": [
@@ -179,9 +164,7 @@
     },
     "/categories": {
       "get": {
-        "tags": [
-          "Categories"
-        ],
+        "tags": ["Categories"],
         "summary": "🔒️ Get all categories by logged user",
         "description": "",
         "parameters": [
@@ -207,9 +190,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Categories"
-        ],
+        "tags": ["Categories"],
         "summary": "🔒️ Create a category by logged user",
         "description": "",
         "parameters": [
@@ -261,9 +242,7 @@
     },
     "/categories/{id}": {
       "get": {
-        "tags": [
-          "Categories"
-        ],
+        "tags": ["Categories"],
         "summary": "🔒️ Get a category by logged user",
         "description": "",
         "parameters": [
@@ -298,9 +277,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Categories"
-        ],
+        "tags": ["Categories"],
         "summary": "🔒️ Update a category by logged user",
         "description": "",
         "parameters": [
@@ -353,9 +330,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Categories"
-        ],
+        "tags": ["Categories"],
         "summary": "🔒️ Delete a category by logged user",
         "description": "",
         "parameters": [
@@ -395,9 +370,7 @@
     },
     "/tasks": {
       "get": {
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "summary": "🔒️ Get undone tasks by logged user",
         "description": "",
         "parameters": [
@@ -423,9 +396,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "summary": "🔒️ Create a task by logged user",
         "description": "",
         "parameters": [
@@ -489,9 +460,7 @@
     },
     "/tasks/all": {
       "get": {
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "summary": "🔒️ Get all tasks by logged user",
         "description": "",
         "parameters": [
@@ -519,9 +488,7 @@
     },
     "/tasks/{id}": {
       "get": {
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "summary": "🔒️ Get a task by logged user",
         "description": "",
         "parameters": [
@@ -556,9 +523,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "summary": "🔒️ Update a task by logged user",
         "description": "",
         "parameters": [
@@ -623,9 +588,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "summary": "🔒️ Delete a task by logged user",
         "description": "",
         "parameters": [
@@ -665,9 +628,7 @@
     },
     "/tasks/complete/{id}": {
       "put": {
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "summary": "🔒️ Complete a task by logged user (set done = true)",
         "description": "",
         "parameters": [
