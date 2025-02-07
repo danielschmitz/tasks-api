@@ -115,7 +115,7 @@ router.put(
     }
 
     const name_exists = await db("categories").where({ name, user_id }).whereNot({ id });
-    if (name_exists) {
+    if (name_exists.length >0) {
       return res.status(409).json({ message: "Category already exists" });
     }
 
