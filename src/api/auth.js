@@ -9,6 +9,9 @@ const db = require("../db")
 const utils = require('../utils')
 
 const userSchema = Joi.object({
+    name: Joi.string()
+        .min(3)
+        .max(50),
     password: Joi.string()
         .min(3)
         .max(30)
@@ -21,7 +24,7 @@ const userSchema = Joi.object({
 router.post('/auth/login', async (req, res) => {
     /* 
     #swagger.tags = ['Auth']
-    #swagger.summary = 'Try to login'
+    #swagger.summary = 'Try to login. If user.name is provided, it will be created'
     #swagger.parameters['user'] = {
         in: 'body',
         description: 'User Login Data',
@@ -37,9 +40,9 @@ router.post('/auth/login', async (req, res) => {
     #swagger.responses[200] = { description: "Token" }
     */
 
-    const { email, password } = req.body
+    const { email, password, name } = req.body
 
-    const validateData = userSchema.validate({ email, password })
+    const validateData = userSchema.validate({ email, password, name })
     if (validateData.error) {
         return res.status(403).json({
             message: validateData.error.message
@@ -48,7 +51,20 @@ router.post('/auth/login', async (req, res) => {
 
     const user = await db("users").where({ email }).first()
     if (!user) {
-        return res.status(500).json({ message: "No user found with that email" })
+        if (name) {
+            const hashedPassword = await bcrypt.hash(password, 10)
+            const user = {
+                name,
+                email,
+                password: hashedPassword
+            }
+            const newUser = await db("users").insert(user)
+            const token = getToken(newUser)
+                return res.status(200).json({token})
+
+            } else {
+            return res.status(500).json({ message: "No user found with that email" })
+        }
     }
 
     const validatePassword = await bcrypt.compare(password, user.password)
@@ -56,18 +72,7 @@ router.post('/auth/login', async (req, res) => {
         return res.status(401).json({ message: "Incorrect password" })
     }
 
-    const token = jsonwebtoken.sign(
-        {
-            id: user.id,
-            email: user.email,
-            name: user.name
-        },
-        // eslint-disable-next-line no-undef
-        process.env.JWT_SECRET,
-        {
-            expiresIn: '1y'
-        }
-    )
+    const token = getToken(user)
 
     res.status(200).json({token})
 })
@@ -88,3 +93,16 @@ router.get('/checkLogin', utils.checkLogin, async (req, res) => {
 
 
 module.exports = router
+
+function getToken(newUser) {
+    return jsonwebtoken.sign(
+        {
+            id: newUser.id,
+            email: newUser.email,
+            name: newUser.name
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: '1y'
+        })
+}
