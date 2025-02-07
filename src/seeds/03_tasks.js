@@ -7,7 +7,6 @@ exports.seed = async function (knex) {
   await knex("tasks").del();
   await knex("tasks").insert([
     {
-      id: 1,
       user_id: 1,
       category_id: 1,
       name: "task 1",
@@ -15,7 +14,6 @@ exports.seed = async function (knex) {
       done: false,
     },
     {
-      id: 2,
       user_id: 1,
       category_id: 1,
       name: "task 2",
@@ -23,7 +21,6 @@ exports.seed = async function (knex) {
       done: false,
     },
     {
-      id: 3,
       user_id: 1,
       category_id: 2,
       name: "task 3",
@@ -31,7 +28,6 @@ exports.seed = async function (knex) {
       done: true,
     },
     {
-      id: 4,
       user_id: 2,
       category_id: 4,
       name: "task 4",
