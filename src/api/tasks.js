@@ -7,6 +7,7 @@ var router = express.Router();
 const taskSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
   description: Joi.string().min(3).max(1000),
+  done: Joi.boolean(),
   user_id: Joi.number(),
   Task_id: Joi.number(),
 });
@@ -21,7 +22,10 @@ router.get("/tasks", utils.checkLogin, async function (req, res, _next) {
     */
   const user_id = req.auth.id;
   const done = false;
-  const tasks = await db("tasks").where({ user_id, done });
+  const tasks = await db("tasks")
+    .select("tasks.id", "tasks.name", "tasks.description", "tasks.done", "categories.name as category", "categories.id as categoryId")
+    .where({ "tasks.user_id": user_id, "tasks.done": done })
+    .join("categories", "categories.id", "tasks.category_id");
   return res.json(tasks);
 });
 
@@ -51,7 +55,7 @@ router.get("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
   if (!task) {
     return res.status(404).json({ message: "Task not found" });
   }
-  return res.json(task);
+  return res.json(task[0]);
 });
 
 router.post("/tasks", utils.checkLogin, async function (req, res, _next) {
