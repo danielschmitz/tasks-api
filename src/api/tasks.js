@@ -107,6 +107,37 @@ router.post("/tasks", utils.checkLogin, async function (req, res, _next) {
   return res.json(task[0]);
 });
 
+
+router.put(
+  "/tasks/complete",
+  utils.checkLogin,
+  async function (req, res, _next) {
+    /*
+    #swagger.tags = ['Tasks']
+    #swagger.summary = '🔒️ Complete a list of tasks by logged user (set done = true)'
+    #swagger.responses[401] = { description: 'Unauthorized' }
+    #swagger.responses[404] = { description: 'Task not found' }
+    #swagger.responses[500] = { description: 'Authorization header is required' }
+    #swagger.responses[200] = { description: 'Tasks updated' }
+    */
+    const user_id = req.auth.id;
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: "Ids is required" });
+    }
+
+    const tasks = await db("tasks").whereIn("id", ids).andWhere({ user_id });
+    if (tasks.length !== ids.length) {
+      return res.status(404).json({ message: "Some tasks not found" });
+    }
+
+    // update tasks
+    await db("tasks").whereIn("id", ids).andWhere({ user_id }).update({ done: true });
+
+    return res.json({ message: "Tasks updated" });
+  },
+);
+
 router.put("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
   /*
     #swagger.tags = ['Tasks']
@@ -133,7 +164,7 @@ router.put("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
 
   const validateSchema = taskSchema.validate({ name });
   if (validateSchema.error) {
-    return res.status(403).json({ message: validateSchema.error.message });
+    return res.status(403).json({ message: validateSchema.error.message + "!!!" });
   }
 
   const task_exists = await db("tasks").where({ id, user_id });
@@ -186,6 +217,7 @@ router.put(
     return res.json(task[0]);
   },
 );
+
 
 router.delete("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
   /*
