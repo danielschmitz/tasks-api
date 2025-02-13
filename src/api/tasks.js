@@ -12,21 +12,28 @@ const taskSchema = Joi.object({
   Task_id: Joi.number(),
 });
 
-router.get("/tasks", utils.checkLogin, async function (req, res, _next) {
+// Router endpoints
+
+router.get("/tasks", utils.checkLogin, (req, res, _next) => {
   /*
     #swagger.tags = ['Tasks']
     #swagger.summary = '🔒️ Get undone tasks by logged user'
     #swagger.responses[401] = { description: 'Unauthorized' }
     #swagger.responses[500] = { description: 'Authorization header is required' }
     #swagger.responses[200] = { description: 'A list of tasks' }
-    */
-  const user_id = req.auth.id;
-  const done = false;
-  const tasks = await db("tasks")
-    .select("tasks.id", "tasks.name", "tasks.description", "tasks.done", "categories.name as category", "categories.id as categoryId")
-    .where({ "tasks.user_id": user_id, "tasks.done": done })
-    .join("categories", "categories.id", "tasks.category_id");
-  return res.json(tasks);
+  */
+  return getTasks(req, res, false);
+});
+
+router.get("/tasks/done", utils.checkLogin, (req, res, _next) => {
+  /*
+    #swagger.tags = ['Tasks']
+    #swagger.summary = '🔒️ Get done tasks by logged user'
+    #swagger.responses[401] = { description: 'Unauthorized' }
+    #swagger.responses[500] = { description: 'Authorization header is required' }
+    #swagger.responses[200] = { description: 'A list of tasks' }
+  */
+  return getTasks(req, res, true);
 });
 
 router.get("/tasks/all", utils.checkLogin, async function (req, res, _next) {
@@ -36,7 +43,7 @@ router.get("/tasks/all", utils.checkLogin, async function (req, res, _next) {
     #swagger.responses[401] = { description: 'Unauthorized' }
     #swagger.responses[500] = { description: 'Authorization header is required' }
     #swagger.responses[200] = { description: 'A list of tasks' }
-    */
+  */
   const user_id = req.auth.id;
   const tasks = await db("tasks").where({ user_id });
   return res.json(tasks);
@@ -49,7 +56,7 @@ router.get("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
     #swagger.responses[401] = { description: 'Unauthorized' }
     #swagger.responses[500] = { description: 'Authorization header is required' }
     #swagger.responses[200] = { description: 'A task' }
-    */
+  */
   const user_id = req.auth.id;
   const task = await db("tasks").where({ id: req.params.id, user_id });
   if (!task) {
@@ -77,8 +84,8 @@ router.post("/tasks", utils.checkLogin, async function (req, res, _next) {
             'category_id': 'Category id',
             'done': 'Task is done'
         }
-    } 
-    */
+    }
+  */
   const user_id = req.auth.id;
   const { name, description, category_id, done } = req.body;
 
@@ -107,36 +114,29 @@ router.post("/tasks", utils.checkLogin, async function (req, res, _next) {
   return res.json(task[0]);
 });
 
-
-router.put(
-  "/tasks/complete",
-  utils.checkLogin,
-  async function (req, res, _next) {
-    /*
+router.put("/tasks/complete", utils.checkLogin, (req, res, _next) => {
+  /*
     #swagger.tags = ['Tasks']
     #swagger.summary = '🔒️ Complete a list of tasks by logged user (set done = true)'
     #swagger.responses[401] = { description: 'Unauthorized' }
     #swagger.responses[404] = { description: 'Task not found' }
     #swagger.responses[500] = { description: 'Authorization header is required' }
     #swagger.responses[200] = { description: 'Tasks updated' }
-    */
-    const user_id = req.auth.id;
-    const { ids } = req.body;
-    if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).json({ message: "Ids is required" });
-    }
+  */
+  return updateTaskStatus(req, res, true);
+});
 
-    const tasks = await db("tasks").whereIn("id", ids).andWhere({ user_id });
-    if (tasks.length !== ids.length) {
-      return res.status(404).json({ message: "Some tasks not found" });
-    }
-
-    // update tasks
-    await db("tasks").whereIn("id", ids).andWhere({ user_id }).update({ done: true });
-
-    return res.json({ message: "Tasks updated" });
-  },
-);
+router.put("/tasks/incomplete", utils.checkLogin, (req, res, _next) => {
+  /*
+    #swagger.tags = ['Tasks']
+    #swagger.summary = '🔒️ Mark as incomplete a list of tasks by logged user (set done = false)'
+    #swagger.responses[401] = { description: 'Unauthorized' }
+    #swagger.responses[404] = { description: 'Task not found' }
+    #swagger.responses[500] = { description: 'Authorization header is required' }
+    #swagger.responses[200] = { description: 'Tasks updated' }
+  */
+  return updateTaskStatus(req, res, false);
+});
 
 router.put("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
   /*
@@ -156,8 +156,8 @@ router.put("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
             'category_id': 'Category id',
             'done': 'Task is done'
         }
-    } 
-    */
+    }
+  */
   const user_id = req.auth.id;
   const { name, description, category_id, done } = req.body;
   const id = req.params.id;
@@ -181,43 +181,29 @@ router.put("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
   return res.json(task[0]);
 });
 
-router.put(
-  "/tasks/complete/:id",
-  utils.checkLogin,
-  async function (req, res, _next) {
-    /*
+router.put("/tasks/complete/:id", utils.checkLogin, (req, res, _next) => {
+  /*
     #swagger.tags = ['Tasks']
     #swagger.summary = '🔒️ Complete a task by logged user (set done = true)'
     #swagger.responses[401] = { description: 'Unauthorized' }
     #swagger.responses[404] = { description: 'Task not found' }
     #swagger.responses[500] = { description: 'Authorization header is required' }
     #swagger.responses[200] = { description: 'Task updated' }
-    */
-    const user_id = req.auth.id;
-    const id = req.params.id;
+  */
+  updateTaskCompletionStatus(req, res, true);
+});
 
-    const task_exists = await db("tasks").where({ id, user_id });
-    if (!task_exists) {
-      return res.status(404).json({ message: "Task not found" });
-    }
-
-    // update task
-    const task = await db("tasks")
-      .where({ id, user_id })
-      .update({ done: true })
-      .returning([
-        "id",
-        "name",
-        "description",
-        "category_id",
-        "user_id",
-        "done",
-      ]);
-
-    return res.json(task[0]);
-  },
-);
-
+router.put("/tasks/incomplete/:id", utils.checkLogin, (req, res, _next) => {
+  /*
+    #swagger.tags = ['Tasks']
+    #swagger.summary = '🔒️ Mark as incomplete a task by logged user (set done = false)'
+    #swagger.responses[401] = { description: 'Unauthorized' }
+    #swagger.responses[404] = { description: 'Task not found' }
+    #swagger.responses[500] = { description: 'Authorization header is required' }
+    #swagger.responses[200] = { description: 'Task updated' }
+  */
+  updateTaskCompletionStatus(req, res, false);
+});
 
 router.delete("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
   /*
@@ -227,7 +213,7 @@ router.delete("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
     #swagger.responses[404] = { description: 'Task not found' }
     #swagger.responses[500] = { description: 'Authorization header is required' }
     #swagger.responses[204] = { description: 'Task deleted' }
-    */
+  */
   const user_id = req.auth.id;
   const id = req.params.id;
   const task = await db("tasks").where({ id, user_id });
@@ -237,5 +223,98 @@ router.delete("/tasks/:id", utils.checkLogin, async function (req, res, _next) {
   await db("tasks").where({ id, user_id }).delete();
   return res.json({ message: "Task deleted" });
 });
+
+// Helper methods moved to the end with JSDoc comments
+
+/**
+ * Retrieves tasks based on done status for the authenticated user.
+ * @param {object} req - Express request object (must include req.auth.id).
+ * @param {object} res - Express response object.
+ * @param {boolean} done - The done status of tasks to retrieve.
+ * @returns {Promise<void>} A promise that resolves when the response is sent.
+ */
+const getTasks = async (req, res, done) => {
+  const user_id = req.auth.id;
+  try {
+    const tasks = await db("tasks")
+      .select([
+        "tasks.id",
+        "tasks.name", 
+        "tasks.description",
+        "tasks.done",
+        "categories.name as category",
+        "categories.id as categoryId"
+      ])
+      .where({ 
+        "tasks.user_id": user_id, 
+        "tasks.done": done 
+      })
+      .join("categories", "categories.id", "tasks.category_id");
+    
+    return res.json(tasks);
+  } catch (error) {
+    return res.status(500).json({ 
+      message: "Error fetching tasks",
+      error: error.message 
+    });
+  }
+};
+
+/**
+ * Updates the status of multiple tasks for the authenticated user.
+ * @param {object} req - Express request object (must include req.auth.id and req.body.ids).
+ * @param {object} res - Express response object.
+ * @param {boolean} isDone - The new done status to set for the tasks.
+ * @returns {Promise<void>} A promise that resolves when the response is sent.
+ */
+const updateTaskStatus = async (req, res, isDone) => {
+  const user_id = req.auth.id;
+  const { ids } = req.body;
+  if (!ids || !Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ message: "Ids is required" });
+  }
+
+  const tasks = await db("tasks").whereIn("id", ids).andWhere({ user_id });
+  if (tasks.length !== ids.length) {
+    return res.status(404).json({ message: "Some tasks not found" });
+  }
+
+  // update tasks
+  await db("tasks").whereIn("id", ids).andWhere({ user_id }).update({ done: isDone });
+
+  return res.json({ message: "Tasks updated" });
+};
+
+/**
+ * Updates the completion status of a single task for the authenticated user.
+ * @param {object} req - Express request object (must include req.auth.id and req.params.id).
+ * @param {object} res - Express response object.
+ * @param {boolean} isDone - The new done status to set for the task.
+ * @returns {Promise<void>} A promise that resolves when the response is sent.
+ */
+const updateTaskCompletionStatus = async (req, res, isDone) => {
+  const user_id = req.auth.id;
+  const id = req.params.id;
+
+  const task_exists = await db("tasks").where({ id, user_id });
+  if (!task_exists) {
+    return res.status(404).json({ message: "Task not found" });
+  }
+
+  // update task
+  const task = await db("tasks")
+    .where({ id, user_id })
+    .update({ done: isDone })
+    .returning([
+      "id",
+      "name",
+      "description",
+      "category_id",
+      "user_id",
+      "done",
+    ]);
+
+  return res.json(task[0]);
+};
 
 module.exports = router;
