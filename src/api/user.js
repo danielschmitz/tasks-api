@@ -131,4 +131,49 @@ router.put("/changePass", utils.checkLogin, async (req, res) => {
   });
 });
 
+router.delete("/:id", utils.checkAdmin, async (req, res) => {
+  /* 
+    #swagger.tags = ['User']
+    #swagger.summary = '🔒️ Remove any user account (Admin only)'
+    #swagger.parameters['id'] = {
+        in: 'path',
+        description: 'User id to be removed',
+        required: true,
+        type: 'integer'
+    }
+    #swagger.responses[404] = { description: 'User not found' }
+    #swagger.responses[200] = { 
+        description: "User removed successfully",
+        schema: {
+            message: "User removed successfully",
+            data: {
+                id: 1,
+                name: "userName",
+                email: "userEmail@example.com"
+            }
+        }
+    }
+  */
+
+  const { id } = req.params;
+  const user = await db("users").where({ id }).first();
+
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found",
+    });
+  }
+
+  await db("users").where({ id }).del();
+
+  res.status(200).json({
+    message: "User removed successfully",
+    data: {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    },
+  });
+});
+
 module.exports = router;
