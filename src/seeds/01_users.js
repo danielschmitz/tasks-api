@@ -9,9 +9,9 @@ exports.seed = function (knex, _Promise) {
     .then(function () {
       // Inserts seed entries
       return knex("users").insert([
-        { name: "user1", email: "user1@email.com", password: hash },
-        { name: "user2", email: "user2@email.com", password: hash },
-        { name: "user3", email: "user3@email.com", password: hash },
+        { name: "user1", email: "user1@email.com", password: hash, role: "admin" },
+        { name: "user2", email: "user2@email.com", password: hash, role: "user" },
+        { name: "user3", email: "user3@email.com", password: hash, role: "user"},
       ]);
     });
 };

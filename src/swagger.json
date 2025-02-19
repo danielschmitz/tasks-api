@@ -11,7 +11,10 @@
     }
   },
   "basePath": "/api",
-  "schemes": ["http", "https"],
+  "schemes": [
+    "http",
+    "https"
+  ],
   "securityDefinitions": {
     "bearerAuth": {
       "type": "apiKey",
@@ -23,10 +26,11 @@
   "paths": {
     "/hello-world": {
       "get": {
-        "tags": ["Hello World"],
+        "tags": [
+          "Hello World"
+        ],
         "summary": "A simple Hello World message",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -36,10 +40,11 @@
     },
     "/hello-world-with-error": {
       "get": {
-        "tags": ["Hello World"],
+        "tags": [
+          "Hello World"
+        ],
         "summary": "A simple Hello World message",
         "description": "",
-        "parameters": [],
         "responses": {
           "500": {
             "description": "hello world error"
@@ -49,7 +54,9 @@
     },
     "/hello-world-test-joi": {
       "post": {
-        "tags": ["Hello World"],
+        "tags": [
+          "Hello World"
+        ],
         "summary": "Test joi validaton object",
         "description": "",
         "parameters": [
@@ -81,10 +88,11 @@
     },
     "/hello-world-json": {
       "get": {
-        "tags": ["Hello World"],
+        "tags": [
+          "Hello World"
+        ],
         "summary": "hello world returning a json object",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -94,8 +102,10 @@
     },
     "/auth/login": {
       "post": {
-        "tags": ["Auth"],
-        "summary": "Try to login",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Try to login. If user.name is provided, it will be created",
         "description": "",
         "parameters": [
           {
@@ -113,6 +123,10 @@
                 "password": {
                   "type": "string",
                   "example": "123456"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "user1"
                 }
               }
             }
@@ -136,7 +150,9 @@
     },
     "/checkLogin": {
       "get": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "🔒️ Check login and return token info",
         "description": "",
         "parameters": [
@@ -164,7 +180,9 @@
     },
     "/categories": {
       "get": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "🔒️ Get all categories by logged user",
         "description": "",
         "parameters": [
@@ -190,7 +208,9 @@
         }
       },
       "post": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "🔒️ Create a category by logged user",
         "description": "",
         "parameters": [
@@ -242,7 +262,9 @@
     },
     "/categories/{id}": {
       "get": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "🔒️ Get a category by logged user",
         "description": "",
         "parameters": [
@@ -277,7 +299,9 @@
         }
       },
       "put": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "🔒️ Update a category by logged user",
         "description": "",
         "parameters": [
@@ -324,13 +348,18 @@
           "404": {
             "description": "Category not found"
           },
+          "409": {
+            "description": "Category already exists"
+          },
           "500": {
             "description": "Authorization header is required"
           }
         }
       },
       "delete": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "🔒️ Delete a category by logged user",
         "description": "",
         "parameters": [
@@ -370,7 +399,9 @@
     },
     "/tasks": {
       "get": {
-        "tags": ["Tasks"],
+        "tags": [
+          "Tasks"
+        ],
         "summary": "🔒️ Get undone tasks by logged user",
         "description": "",
         "parameters": [
@@ -396,7 +427,9 @@
         }
       },
       "post": {
-        "tags": ["Tasks"],
+        "tags": [
+          "Tasks"
+        ],
         "summary": "🔒️ Create a task by logged user",
         "description": "",
         "parameters": [
@@ -458,9 +491,41 @@
         }
       }
     },
+    "/tasks/done": {
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "🔒️ Get done tasks by logged user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of tasks"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Authorization header is required"
+          }
+        }
+      }
+    },
     "/tasks/all": {
       "get": {
-        "tags": ["Tasks"],
+        "tags": [
+          "Tasks"
+        ],
         "summary": "🔒️ Get all tasks by logged user",
         "description": "",
         "parameters": [
@@ -488,7 +553,9 @@
     },
     "/tasks/{id}": {
       "get": {
-        "tags": ["Tasks"],
+        "tags": [
+          "Tasks"
+        ],
         "summary": "🔒️ Get a task by logged user",
         "description": "",
         "parameters": [
@@ -523,7 +590,9 @@
         }
       },
       "put": {
-        "tags": ["Tasks"],
+        "tags": [
+          "Tasks"
+        ],
         "summary": "🔒️ Update a task by logged user",
         "description": "",
         "parameters": [
@@ -588,7 +657,9 @@
         }
       },
       "delete": {
-        "tags": ["Tasks"],
+        "tags": [
+          "Tasks"
+        ],
         "summary": "🔒️ Delete a task by logged user",
         "description": "",
         "parameters": [
@@ -626,10 +697,141 @@
         }
       }
     },
+    "/tasks/complete": {
+      "put": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "🔒️ Complete a list of tasks by logged user (set done = true)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tasks updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Task not found"
+          },
+          "500": {
+            "description": "Authorization header is required"
+          }
+        }
+      }
+    },
+    "/tasks/incomplete": {
+      "put": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "🔒️ Mark as incomplete a list of tasks by logged user (set done = false)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tasks updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Task not found"
+          },
+          "500": {
+            "description": "Authorization header is required"
+          }
+        }
+      }
+    },
     "/tasks/complete/{id}": {
       "put": {
-        "tags": ["Tasks"],
+        "tags": [
+          "Tasks"
+        ],
         "summary": "🔒️ Complete a task by logged user (set done = true)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Task not found"
+          },
+          "500": {
+            "description": "Authorization header is required"
+          }
+        }
+      }
+    },
+    "/tasks/incomplete/{id}": {
+      "put": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "🔒️ Mark as incomplete a task by logged user (set done = false)",
         "description": "",
         "parameters": [
           {

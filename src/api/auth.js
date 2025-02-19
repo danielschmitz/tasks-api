@@ -24,7 +24,8 @@ router.post("/auth/login", async (req, res) => {
         required: true,
         schema: { 
             "email": "user1@email.com",
-            "password": "123456"
+            "password": "123456",
+            "name": "user1" 
         }
     } 
     #swagger.responses[403] = { description: 'Invalid input' }
@@ -50,10 +51,11 @@ router.post("/auth/login", async (req, res) => {
         name,
         email,
         password: hashedPassword,
+        role: "user",
       };
       const newUser = await db("users")
         .insert(user)
-        .returning(["id", "name", "email"]);
+        .returning(["id", "name", "email", "role"]);
       const token = getToken(newUser[0]);
       return res.status(200).json({ token });
     } else {
@@ -92,10 +94,11 @@ function getToken(newUser) {
       id: newUser.id,
       email: newUser.email,
       name: newUser.name,
+      role: newUser.role, // Adiciona o campo role ao token
     },
     process.env.JWT_SECRET,
     {
       expiresIn: "1y",
-    },
+    }
   );
 }

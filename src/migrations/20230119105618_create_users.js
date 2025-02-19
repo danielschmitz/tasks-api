@@ -8,6 +8,7 @@ exports.up = function (knex) {
     table.string("name", 80).notNullable();
     table.string("email", 80).notNullable();
     table.string("password", 80).notNullable();
+    table.string("role", 20).defaultTo("user").notNullable(); // Adiciona o campo role
   });
 };
 
