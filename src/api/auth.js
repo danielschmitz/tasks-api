@@ -86,6 +86,19 @@ router.get("/checkLogin", utils.checkLogin, async (req, res) => {
   });
 });
 
+router.get("/checkAdmin", utils.checkAdmin, async (req, res) => {
+  /* 
+    #swagger.tags = ['Auth']
+    #swagger.summary = '🔒️ Check login is admin and return token info'
+    #swagger.responses[401] = { description: 'Unauthorized' }
+    #swagger.responses[500] = { description: 'Authorization header is required' }
+    #swagger.responses[200] = { description: "Token" }
+    */
+  return res.status(200).json({
+    token: req.auth,
+  });
+});
+
 module.exports = router;
 
 function getToken(newUser) {

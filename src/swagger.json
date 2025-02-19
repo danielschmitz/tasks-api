@@ -178,6 +178,39 @@
         }
       }
     },
+    "/checkAdmin": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "🔒️ Check login is admin and return token info",
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Authorization header is required"
+          }
+        }
+      }
+    },
     "/categories": {
       "get": {
         "tags": [
