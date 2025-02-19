@@ -33,6 +33,7 @@ const endpointsFiles = [
   "./src/api/auth.js",
   "./src/api/categories.js",
   "./src/api/tasks.js",
+  "./src/api/user.js",
 ];
 
 swaggerAutogen(outputFile, endpointsFiles, doc);
