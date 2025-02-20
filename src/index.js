@@ -8,12 +8,7 @@ const app = express();
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
-var options = {
-  customCssUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.css",
-};
-
-app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get("/", function (_req, res) {
   res.redirect("/swagger");
 });
