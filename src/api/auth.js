@@ -107,6 +107,7 @@ function getToken(newUser) {
       id: newUser.id,
       email: newUser.email,
       name: newUser.name,
+      plan: newUser.plan,
       role: newUser.role, // Adiciona o campo role ao token
     },
     process.env.JWT_SECRET,

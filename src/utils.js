@@ -16,6 +16,8 @@ const utils = {
         return res.status(401).send({ message: "Unauthorized" });
       } else {
         req.auth = auth;
+        // TODO: check schema, plan, user
+        // if shema or plan for diferente, bloqueie o usuário
         next();
       }
     });
