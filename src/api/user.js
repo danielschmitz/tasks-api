@@ -8,6 +8,8 @@ const utils = require("../utils");
 const editSchema = Joi.object({
   name: Joi.string().min(3).max(50).required(),
   email: Joi.string().email().required(),
+  schema: Joi.string().max(50).required(),
+  plan: Joi.number().integer().min(1).max(3).required()
 });
 
 const changePassSchema = Joi.object({
@@ -25,7 +27,9 @@ router.put("/edit", utils.checkLogin, async (req, res) => {
         required: true,
         schema: { 
             "name": "newName",
-            "email": "newEmail@example.com"
+            "email": "newEmail@example.com",
+            "schema": "newSchema",
+            "plan": 1
         }
     } 
     #swagger.responses[400] = { description: 'Invalid input or email already in use' }
@@ -36,16 +40,18 @@ router.put("/edit", utils.checkLogin, async (req, res) => {
             data: {
                 id: 1,
                 name: "newName",
-                email: "newEmail@example.com"
+                email: "newEmail@example.com",
+                schema: "newSchema",
+                plan: 1
             }
         }
     }
     */
 
-  const { name, email } = req.body;
+  const { name, email, schema, plan } = req.body;
   const { id } = req.auth;
 
-  const validateData = editSchema.validate({ name, email });
+  const validateData = editSchema.validate({ name, email, schema, plan });
   if (validateData.error) {
     return res.status(400).json({
       message: validateData.error.message,
@@ -59,7 +65,9 @@ router.put("/edit", utils.checkLogin, async (req, res) => {
     });
   }
 
-  await db("users").where({ id }).update({ name, email });
+  const updateData = { name, email, schema, plan };
+
+  await db("users").where({ id }).update(updateData);
   const updatedUser = await db("users").where({ id }).first();
 
   res.status(200).json({
@@ -68,6 +76,8 @@ router.put("/edit", utils.checkLogin, async (req, res) => {
       id: updatedUser.id,
       name: updatedUser.name,
       email: updatedUser.email,
+      schema: updatedUser.schema,
+      plan: updatedUser.plan
     },
   });
 });
@@ -93,7 +103,9 @@ router.put("/changePass", utils.checkLogin, async (req, res) => {
             data: {
                 id: 1,
                 name: "userName",
-                email: "userEmail@example.com"
+                email: "userEmail@example.com",
+                schema: "userSchema",
+                plan: 1
             }
         }
     }
@@ -127,6 +139,8 @@ router.put("/changePass", utils.checkLogin, async (req, res) => {
       id: updatedUser.id,
       name: updatedUser.name,
       email: updatedUser.email,
+      schema: updatedUser.schema,
+      plan: updatedUser.plan
     },
   });
 });
@@ -149,7 +163,9 @@ router.delete("/:id", utils.checkAdmin, async (req, res) => {
             data: {
                 id: 1,
                 name: "userName",
-                email: "userEmail@example.com"
+                email: "userEmail@example.com",
+                schema: "userSchema",
+                plan: 1
             }
         }
     }
@@ -171,7 +187,9 @@ router.delete("/:id", utils.checkAdmin, async (req, res) => {
     data: {
       id: user.id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      schema: user.schema,
+      plan: user.plan
     },
   });
 });
