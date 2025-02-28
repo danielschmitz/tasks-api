@@ -172,6 +172,12 @@
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
           "500": {
             "description": "Authorization header is required"
           }
@@ -205,6 +211,9 @@
           "403": {
             "description": "Forbidden"
           },
+          "404": {
+            "description": "Not Found"
+          },
           "500": {
             "description": "Authorization header is required"
           }
@@ -234,6 +243,12 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Authorization header is required"
@@ -284,6 +299,9 @@
           "403": {
             "description": "Invalid Input"
           },
+          "404": {
+            "description": "Not Found"
+          },
           "409": {
             "description": "Category already exists"
           },
@@ -322,6 +340,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -421,6 +442,9 @@
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Category not found"
           },
@@ -453,6 +477,12 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Authorization header is required"
@@ -515,6 +545,9 @@
           "403": {
             "description": "Invalid Input"
           },
+          "404": {
+            "description": "Not Found"
+          },
           "409": {
             "description": "Task already exists"
           },
@@ -548,6 +581,12 @@
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
           "500": {
             "description": "Authorization header is required"
           }
@@ -577,6 +616,12 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Authorization header is required"
@@ -613,6 +658,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -721,6 +769,9 @@
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Task not found"
           },
@@ -765,6 +816,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Task not found"
@@ -811,6 +865,9 @@
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Task not found"
           },
@@ -849,6 +906,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Task not found"
@@ -889,6 +949,9 @@
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Task not found"
           },
@@ -926,6 +989,10 @@
                 "email": {
                   "type": "string",
                   "example": "newEmail@example.com"
+                },
+                "schema": {
+                  "type": "string",
+                  "example": "newSchema"
                 }
               }
             }
@@ -955,6 +1022,10 @@
                     "email": {
                       "type": "string",
                       "example": "newEmail@example.com"
+                    },
+                    "schema": {
+                      "type": "string",
+                      "example": "newSchema"
                     }
                   }
                 }
@@ -969,6 +1040,12 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -1044,6 +1121,12 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }

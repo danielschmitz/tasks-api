@@ -31,6 +31,7 @@ router.post("/auth/login", async (req, res) => {
     #swagger.responses[403] = { description: 'Invalid input' }
     #swagger.responses[500] = { description: 'No user found with that email' }
     #swagger.responses[500] = { description: 'Incorrect password' }
+    #swagger.responses[403] = { description: 'Your account has been suspended' }
     #swagger.responses[200] = { description: "Token" }
     */
 
@@ -47,13 +48,14 @@ router.post("/auth/login", async (req, res) => {
   if (!user) {
     if (name) {
       const hashedPassword = await bcrypt.hash(password, 10);
+      // TODO: Generate Schema
       const user = {
         name,
         email,
         password: hashedPassword,
         role: "user",
-        schema: "default",
-        plan: 1,
+        schema: "default", 
+        plan: 1, 
         ban: false
       };
       const newUser = await db("users")
@@ -68,7 +70,7 @@ router.post("/auth/login", async (req, res) => {
 
   // Verificar se o usuário está banido
   if (user.ban) {
-    return res.status(403).json({ message: "Your account has been banned" });
+    return res.status(403).json({ message: "Your account has been suspended" });
   }
 
   const validatePassword = await bcrypt.compare(password, user.password);
@@ -107,7 +109,6 @@ router.get("/checkAdmin", utils.checkAdmin, async (req, res) => {
   });
 });
 
-module.exports = router;
 
 function getToken(newUser) {
   return jsonwebtoken.sign(
@@ -126,3 +127,5 @@ function getToken(newUser) {
     }
   );
 }
+
+module.exports = router;
