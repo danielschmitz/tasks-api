@@ -52,15 +52,23 @@ router.post("/auth/login", async (req, res) => {
         email,
         password: hashedPassword,
         role: "user",
+        schema: "default",
+        plan: 1,
+        ban: false
       };
       const newUser = await db("users")
         .insert(user)
-        .returning(["id", "name", "email", "role"]);
+        .returning(["id", "name", "email", "role", "schema", "plan", "ban"]);
       const token = getToken(newUser[0]);
       return res.status(200).json({ token });
     } else {
       return res.status(500).json({ message: "No user found with that email" });
     }
+  }
+
+  // Verificar se o usuário está banido
+  if (user.ban) {
+    return res.status(403).json({ message: "Your account has been banned" });
   }
 
   const validatePassword = await bcrypt.compare(password, user.password);
@@ -107,8 +115,10 @@ function getToken(newUser) {
       id: newUser.id,
       email: newUser.email,
       name: newUser.name,
+      role: newUser.role,
+      schema: newUser.schema,
       plan: newUser.plan,
-      role: newUser.role, // Adiciona o campo role ao token
+      ban: newUser.ban
     },
     process.env.JWT_SECRET,
     {
